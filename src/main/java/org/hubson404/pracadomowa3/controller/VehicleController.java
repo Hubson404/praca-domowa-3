@@ -2,21 +2,23 @@ package org.hubson404.pracadomowa3.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.hubson404.pracadomowa3.model.Vehicle;
+import org.hubson404.pracadomowa3.model.VehicleColor;
 import org.hubson404.pracadomowa3.service.VehicleService;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
+import javax.validation.Valid;
 import java.util.Optional;
-
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/vehicles",
-        produces = {MediaType.APPLICATION_XML_VALUE,
-                MediaType.APPLICATION_JSON_VALUE})
+@CrossOrigin
+@RequestMapping(path = "/vehicles", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
 public class VehicleController {
 
     private final VehicleService vehicleService;
@@ -37,7 +39,7 @@ public class VehicleController {
     }
 
     @GetMapping("/byColor")
-    public ResponseEntity<CollectionModel<Vehicle>> findVehiclesByColor(@RequestParam String color) {
+    public ResponseEntity<CollectionModel<Vehicle>> findVehiclesByColor(@RequestParam VehicleColor color) {
         CollectionModel<Vehicle> byColor = vehicleService.getByColor(color);
         if (!byColor.hasLinks()) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
@@ -46,7 +48,7 @@ public class VehicleController {
     }
 
     @PostMapping
-    public ResponseEntity addVehicle(@RequestBody Vehicle vehicle) {
+    public ResponseEntity addVehicle(@RequestBody @Valid Vehicle vehicle) {
         boolean add = vehicleService.add(vehicle);
         if (add) {
             return new ResponseEntity(HttpStatus.ACCEPTED);
@@ -55,7 +57,7 @@ public class VehicleController {
     }
 
     @PutMapping
-    public ResponseEntity modVehicle(@RequestBody Vehicle newVehicle) {
+    public ResponseEntity modVehicle(@Valid @RequestBody Vehicle newVehicle) {
         boolean mod = vehicleService.modVehicle(newVehicle);
         if (mod) {
             return new ResponseEntity(HttpStatus.OK);
@@ -67,7 +69,7 @@ public class VehicleController {
     public ResponseEntity patchVehicle(@PathVariable long id,
                                        @RequestParam(required = false) String brand,
                                        @RequestParam(required = false) String model,
-                                       @RequestParam(required = false) String color) {
+                                       @RequestParam(required = false) VehicleColor color) {
 
         boolean patch = vehicleService.patchVehicle(id, brand, model, color);
         if (patch) {

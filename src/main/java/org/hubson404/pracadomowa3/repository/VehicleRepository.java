@@ -1,6 +1,7 @@
 package org.hubson404.pracadomowa3.repository;
 
 import org.hubson404.pracadomowa3.model.Vehicle;
+import org.hubson404.pracadomowa3.model.VehicleColor;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Repository;
@@ -11,6 +12,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static org.hubson404.pracadomowa3.model.VehicleColor.*;
+
 @Repository
 public class VehicleRepository {
 
@@ -18,9 +21,9 @@ public class VehicleRepository {
 
     @EventListener(ApplicationReadyEvent.class)
     public void initRepository() {
-        vehicleList.add(new Vehicle(1L, "Tesla", "S", "white"));
-        vehicleList.add(new Vehicle(2L, "Audi", "RS6", "grey"));
-        vehicleList.add(new Vehicle(3L, "Fiat", "126P", "orange"));
+        vehicleList.add(new Vehicle(1L, "Tesla", "S", WHITE));
+        vehicleList.add(new Vehicle(2L, "Audi", "RS6", GREY));
+        vehicleList.add(new Vehicle(3L, "Fiat", "126P", YELLOW));
     }
 
     public VehicleRepository() {
@@ -35,7 +38,7 @@ public class VehicleRepository {
         return vehicleList.stream().filter(vehicle -> vehicle.getId() == id).findFirst();
     }
 
-    public List<Vehicle> findByColor(String color) {
+    public List<Vehicle> findByColor(VehicleColor color) {
         return vehicleList.stream()
                 .filter(vehicle -> Objects.equals(color, vehicle.getColor()))
                 .collect(Collectors.toList());

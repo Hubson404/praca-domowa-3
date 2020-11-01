@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.hateoas.RepresentationModel;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
 
 @Getter
 @Setter
@@ -15,12 +15,11 @@ import javax.validation.constraints.NotNull;
 public class Vehicle extends RepresentationModel<Vehicle> {
 
     private long id;
-
-    @NotNull(message = "brand cannot be null")
+    @NotEmpty(message = "brand cannot be empty")
     private String brand;
-    @NotNull(message = "model cannot be null")
+    @NotEmpty(message = "model cannot be empty")
     private String model;
-    @NotNull(message = "color cannot be null")
-    private String color;
+    @NotEmpty(message = "color cannot be empty")
+    private VehicleColor color;
 
 }
