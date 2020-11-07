@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.Optional;
 
 @Slf4j
@@ -23,23 +22,17 @@ public class VehicleGuiController {
     private final VehicleService vehicleService;
 
     @GetMapping("/vehicles")
-    public String findAllVehicles(Model model) {
+    public String showAllVehicles(Model model) {
         CollectionModel<Vehicle> allVehicles = vehicleService.getAllVehicles();
         model.addAttribute("allVehicles", allVehicles);
         return "vehicles";
     }
 
-    @GetMapping("/delete/{id}")
-    public String removeVehicleById(@PathVariable long id) {
-        boolean delete = vehicleService.deleteById(id);
-        return "redirect:/vehicles";
-    }
-
     @GetMapping("/modify/{id}")
-    public String goToModify(Model model, @PathVariable long id) {
+    public String openModifyForm(Model model, @PathVariable long id) {
         Optional<Vehicle> vehicleById = vehicleService.getVehicleById(id);
         model.addAttribute("vehicle", vehicleById.get());
-        return "modify";
+        return "modifyForm";
     }
 
     @GetMapping("mod-vehicle")
@@ -49,19 +42,25 @@ public class VehicleGuiController {
     }
 
     @GetMapping("/vehicles/{id}")
-    public String showVehicle(Model model, @PathVariable Long id){
-        Vehicle vehicle = vehicleService.getVehicleById(id).get();
-        model.addAttribute("vehicle", vehicle);
-        return "distinct-vehicle";
+    public String findVehicleById(Model model, @PathVariable Long id) {
+        Optional<Vehicle> vehicleById = vehicleService.getVehicleById(id);
+        if (vehicleById.isEmpty()) {
+            return "redirect:/vehicles";
+        }
+        model.addAttribute("vehicle", vehicleById.get());
+        return "vehicleById";
     }
 
     @PostMapping("/getVehicle")
     public String getVehicleById(Long id) {
+        if (id == null){
+            return "redirect:/vehicles";
+        }
         return "redirect:/vehicles/" + id;
     }
 
     @PostMapping("/postVehicle")
-    public String postVehicle(@ModelAttribute Vehicle vehicle){
+    public String postVehicle(@ModelAttribute Vehicle vehicle) {
         vehicleService.add(vehicle);
         return "redirect:/vehicles";
     }
@@ -75,8 +74,13 @@ public class VehicleGuiController {
                 .map(vehicle -> vehicle.getId())
                 .max(Long::compareTo)
                 .get();
-        model.addAttribute("nextId", aLong+1);
+        model.addAttribute("nextId", aLong + 1);
         return "addVehicle";
     }
 
+    @GetMapping("/delete/{id}")
+    public String removeVehicleById(@PathVariable long id) {
+        vehicleService.deleteById(id);
+        return "redirect:/vehicles";
+    }
 }
