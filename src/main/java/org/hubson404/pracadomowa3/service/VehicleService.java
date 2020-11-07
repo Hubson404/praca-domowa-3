@@ -3,7 +3,6 @@ package org.hubson404.pracadomowa3.service;
 import lombok.RequiredArgsConstructor;
 import org.hubson404.pracadomowa3.model.Vehicle;
 import org.hubson404.pracadomowa3.controller.VehicleController;
-import org.hubson404.pracadomowa3.model.VehicleColor;
 import org.hubson404.pracadomowa3.repository.VehicleRepository;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
@@ -39,7 +38,7 @@ public class VehicleService {
         return byId;
     }
 
-    public CollectionModel<Vehicle> getByColor(VehicleColor color) {
+    public CollectionModel<Vehicle> getByColor(String color) {
         List<Vehicle> list = vehicleRepository.findByColor(color);
         list.forEach(vehicle -> vehicle.addIf(!vehicle.hasLinks(), () -> linkTo(VehicleController.class).slash(vehicle.getId()).withSelfRel()));
         Link link = linkTo(methodOn(VehicleController.class).findVehiclesByColor(color)).withSelfRel();
@@ -58,7 +57,7 @@ public class VehicleService {
         return vehicleRepository.deleteById(id);
     }
 
-    public boolean patchVehicle(long id, String brand, String model, VehicleColor color) {
+    public boolean patchVehicle(long id, String brand, String model, String color) {
         Optional<Vehicle> byId = vehicleRepository.findById(id);
         boolean patch = byId.isPresent();
         if (patch) {

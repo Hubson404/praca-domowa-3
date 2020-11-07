@@ -1,9 +1,6 @@
 package org.hubson404.pracadomowa3.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.NotEmpty;
@@ -20,6 +17,6 @@ public class Vehicle extends RepresentationModel<Vehicle> {
     @NotEmpty(message = "model cannot be empty")
     private String model;
     @NotEmpty(message = "color cannot be empty")
-    private VehicleColor color;
+    private String color;
 
 }

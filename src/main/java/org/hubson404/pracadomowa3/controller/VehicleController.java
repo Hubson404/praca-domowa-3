@@ -13,12 +13,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin
-@RequestMapping(path = "/vehicles", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+@RequestMapping(path = "/api/vehicles", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
 public class VehicleController {
 
     private final VehicleService vehicleService;
@@ -39,7 +40,7 @@ public class VehicleController {
     }
 
     @GetMapping("/byColor")
-    public ResponseEntity<CollectionModel<Vehicle>> findVehiclesByColor(@RequestParam VehicleColor color) {
+    public ResponseEntity<CollectionModel<Vehicle>> findVehiclesByColor(@RequestParam String color) {
         CollectionModel<Vehicle> byColor = vehicleService.getByColor(color);
         if (!byColor.hasLinks()) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
@@ -69,7 +70,7 @@ public class VehicleController {
     public ResponseEntity patchVehicle(@PathVariable long id,
                                        @RequestParam(required = false) String brand,
                                        @RequestParam(required = false) String model,
-                                       @RequestParam(required = false) VehicleColor color) {
+                                       @RequestParam(required = false) String color) {
 
         boolean patch = vehicleService.patchVehicle(id, brand, model, color);
         if (patch) {
